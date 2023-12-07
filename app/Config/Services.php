@@ -3,8 +3,6 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseService;
-use App\Repositories\Users\UserRepositoryInterface;
-use App\Repositories\Users\UserRepository;
 
 /**
  * Services Configuration file.
@@ -32,13 +30,18 @@ class Services extends BaseService
      * }
      */
 
-    /**
-     * @return array
-     */
-    public static function getServices(): array
+    public static function services()
     {
         return [
             // Repositories
+            UserRepositoryInterfac::class => UserRepository::class,
+        ];
+    }
+
+    public static function getServices()
+    {
+        return [
+            // Repositorios
             UserRepositoryInterface::class => UserRepository::class,
         ];
     }

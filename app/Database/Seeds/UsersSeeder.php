@@ -42,7 +42,7 @@ class UsersSeeder extends Seeder
                 'picture' => $this->faker->imageUrl(),
                 'phone' => $isAdmin ? 9999999999 : random_int(1000000000, 9999999999),
                 'email' => $this->faker->email(),
-                'password' => 'password',
+                'password' => password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]),
                 'type' => $arrType,
                 'created_at' => $dateNow->format('Y-m-d H:i:s'),
                 'updated_at' => $dateNow->format('Y-m-d H:i:s'),
