@@ -2,6 +2,9 @@
 
 namespace App\Validation\Users;
 
+use App\Models\UserModel;
+use Config\Services;
+
 class StoreUserValidation
 {
     public static function rules(array $data, bool $isUpdate = false): array
@@ -17,6 +20,9 @@ class StoreUserValidation
 
         if ($isUpdate){
             $rules['id'] = 'required';
+            if (!isset($data['type'])){
+                unset($rules['type']);
+            }
         }
 
         // Check if it's an update
@@ -50,5 +56,21 @@ class StoreUserValidation
                 'required' => 'Type is required',
             ],
         ];
+    }
+
+    public static function validActionUserBasic($tokenData, array $params = []): bool
+    {
+        if($tokenData->type == UserModel::TYPE_BASIC) {
+            if ($params['id'] != $tokenData->user_id) {
+                return false;
+            }
+
+            if (isset($params['type'])){
+                return false;
+            }
+        }
+
+        return true;
+
     }
 }

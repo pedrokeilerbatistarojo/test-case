@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\UserModel;
 use App\Services\App\DomPdfService;
 use App\Services\Users\UploadUserPictureService;
 use App\UseCases\Auth\LoginUseCase;
@@ -26,6 +27,7 @@ class UserController extends BaseController
     {
         $this->listUsersUseCase = Services::getListUsersUseCase();
         $this->storeUserUseCase = Services::getStoreUserUseCase();
+        helper('auth/access_role');
     }
 
     /**
@@ -45,6 +47,10 @@ class UserController extends BaseController
      */
     public function store(): ResponseInterface
     {
+        if ($this->validationByTokenRole($this->request->getHeaderLine('Authorization'), UserModel::TYPE_ADMIN)){
+            return $this->failUnauthorized('The user is not authorized for this action');
+        }
+
         $validation = Services::validation();
         $validation->setRules(StoreUserValidation::rules([]), StoreUserValidation::messages());
         if ($validation->withRequest($this->request)->run()) {
@@ -75,11 +81,14 @@ class UserController extends BaseController
     public function update(): ResponseInterface
     {
         $data = $this->request->getJSON(true);
+        $tokenData = getDataTokenByAuthorizationHeader($this->request->getHeaderLine('Authorization'));
+        if (!StoreUserValidation::validActionUserBasic($tokenData, $data)){
+            return $this->failUnauthorized('The user is not authorized for this action');
+        }
 
         $validation = Services::validation();
         $validation->setRules(StoreUserValidation::rules($data, true), StoreUserValidation::messages());
         if ($validation->withRequest($this->request)->run()) {
-
             //Upload a picture service handle
             $data['picture'] = UploadUserPictureService::handleBase64($data);
 
@@ -136,5 +145,21 @@ class UserController extends BaseController
         ], ResponseInterface::HTTP_OK);
     }
 
+    /**
+     * Validation by token role
+     * @param $authHeader
+     * @param $userRole
+     * @return bool
+     */
+    private function validationByTokenRole($authHeader, $userRole): bool
+    {
+        $tokenData = getDataTokenByAuthorizationHeader($authHeader);
+
+        if ($tokenData->type != $userRole){
+            return true;
+        }
+
+        return false;
+    }
 
 }
