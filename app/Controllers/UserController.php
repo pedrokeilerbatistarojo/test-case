@@ -2,19 +2,14 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\UserModel;
-use App\Services\App\DomPdfService;
 use App\Services\Users\UploadUserPictureService;
-use App\UseCases\Auth\LoginUseCase;
 use App\UseCases\Users\ListUsersUseCase;
 use App\UseCases\Users\StoreUserUseCase;
 use App\Validation\Users\StoreUserValidation;
 use CodeIgniter\API\ResponseTrait;
-use CodeIgniter\HTTP\Response;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
-use Dompdf\Dompdf;
 use ReflectionException;
 
 class UserController extends BaseController
@@ -111,6 +106,10 @@ class UserController extends BaseController
      */
     public function delete(): ResponseInterface
     {
+        if ($this->validationByTokenRole($this->request->getHeaderLine('Authorization'), UserModel::TYPE_ADMIN)){
+            return $this->failUnauthorized('The user is not authorized for this action');
+        }
+
         $validation = Services::validation();
         $validation->setRules(['id' => 'required']);
         if ($validation->withRequest($this->request)->run()) {
