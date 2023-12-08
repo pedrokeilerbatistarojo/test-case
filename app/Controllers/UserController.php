@@ -123,16 +123,18 @@ class UserController extends BaseController
     }
 
     /**
-     * Download list users
+     * Download list users in PDF
      * @return ResponseInterface
      */
     public function downloadPdf(): ResponseInterface
     {
         $downloadUserUseCase = Services::getDownloadUserUseCase();
-        $downloadUserUseCase->execute();
+        $pdfUrl = $downloadUserUseCase->execute();
 
         return $this->respond([
-            'message' => 'Download Successfully Success'
+            'pdf_url' => $pdfUrl
         ], ResponseInterface::HTTP_OK);
     }
+
+
 }

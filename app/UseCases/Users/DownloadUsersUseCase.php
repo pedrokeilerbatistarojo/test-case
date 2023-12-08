@@ -20,18 +20,25 @@ class DownloadUsersUseCase
 
     /**
      * Execute the action download users
-     * @return void
+     * @return string
      */
-    public function execute(): void
+    public function execute(): string
     {
-        $userData = $this->userRepository->findAll();
-
         $dompdf = new Dompdf();
-        $dompdf->loadHTML(
-            view("users/pdf", $userData)
-        );
+
+        $data = ['users' => $this->userRepository->findAll()] ;
+
+        $html = view('users/pdf', $data);
+
+        $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        $dompdf->stream();
+        $pdfContent = $dompdf->output();
+
+        $pdfPath = WRITEPATH . 'pdfs/' . uniqid('pdf_') . '.pdf';
+
+        file_put_contents($pdfPath, $pdfContent);
+
+        return base_url('pdfs/' . basename($pdfPath));
     }
 }
