@@ -31,7 +31,7 @@
             flex-basis: 0;
             -ms-flex-positive: 1;
             flex-grow: 1;
-            max-width: 10%;
+            max-width: 100%;
         }
 
         .img-fluid {
