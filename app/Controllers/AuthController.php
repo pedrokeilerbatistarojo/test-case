@@ -2,32 +2,51 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use App\Repositories\Users\UserRepositoryInterface;
-use App\Services\Criteria\Users\FieldUserCriteria;
+use App\UseCases\Auth\LoginUseCase;
+use App\Validation\Auth\LoginValidation;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\HTTP\ResponseInterface;
+use Config\Services;
+use ReflectionException;
 
 class AuthController extends BaseController
 {
     use ResponseTrait;
 
+    private LoginUseCase $loginUseCase;
+
     public function __construct()
     {
-
+        $this->loginUseCase = Services::getLoginUseCase();
     }
 
     /**
      * Login users with api
-     * @return \CodeIgniter\HTTP\ResponseInterface
+     * @return ResponseInterface
+     * @throws ReflectionException
      */
     public function login()
     {
+        $validation = Services::validation();
+        $validation->setRules(LoginValidation::rules(), LoginValidation::messages());
 
-        $data = [
-            'status'  => 'success',
-            'message' => 'Login successful',
-        ];
+        //Running validation rules
+        if ($validation->withRequest($this->request)->run()) {
+            $phone    = $this->request->getPost('phone');
+            $password = $this->request->getPost('password');
 
-        return $this->respond($data);
+            //Execute Login Use Case
+            $token = $this->loginUseCase->execute($phone, $password);
+
+            if ($token) {
+                $data['message'] = 'Login successful';
+                $data['token'] = $token;
+                return $this->respond($data);
+            } else {
+                return $this->failUnauthorized('Invalid credentials');
+            }
+        }
+
+        return $this->failValidationErrors($validation->getErrors());
     }
 }

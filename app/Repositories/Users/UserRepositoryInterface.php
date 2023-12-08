@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Users;
 
+use App\Models\UserModel;
 use App\Services\Criteria\CriteriaInterface;
 
 interface UserRepositoryInterface
@@ -19,5 +20,18 @@ interface UserRepositoryInterface
      * @return array
      */
     public function search(CriteriaInterface $criteria): array;
+
+    /**
+     * Find users by id
+     * @param $id
+     */
+    public function find($id);
+
+    /**
+     * Remove users by id
+     * @param $id
+     * @return bool
+     */
+    public function remove($id) : bool;
 
 }

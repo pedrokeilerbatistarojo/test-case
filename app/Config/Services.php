@@ -2,6 +2,11 @@
 
 namespace Config;
 
+use App\Repositories\Users\UserRepository;
+use App\Repositories\Users\UserRepositoryInterface;
+use App\UseCases\Auth\LoginUseCase;
+use App\UseCases\Users\StoreUserUseCase;
+use App\UseCases\Users\ListUsersUseCase;
 use CodeIgniter\Config\BaseService;
 
 /**
@@ -19,30 +24,46 @@ use CodeIgniter\Config\BaseService;
  */
 class Services extends BaseService
 {
-    /*
-     * public static function example($getShared = true)
-     * {
-     *     if ($getShared) {
-     *         return static::getSharedInstance('example');
-     *     }
-     *
-     *     return new \CodeIgniter\Example();
-     * }
-     */
-
-    public static function services()
+    public static function getUserRepository(): UserRepositoryInterface
     {
-        return [
-            // Repositories
-            UserRepositoryInterfac::class => UserRepository::class,
-        ];
+        return new UserRepository();
+    }
+    public static function getLoginUseCase(): LoginUseCase
+    {
+        return new LoginUseCase(self::getUserRepository());
+    }
+
+    public static function getListUsersUseCase(): ListUsersUseCase
+    {
+        return new ListUsersUseCase(self::getUserRepository());
+    }
+
+    public static function getStoreUserUseCase(): StoreUserUseCase
+    {
+        return new StoreUserUseCase(self::getUserRepository());
     }
 
     public static function getServices()
     {
         return [
+            // Otros servicios
+
+            // Ejemplo de uso de clausura para LoginUseCase
+            LoginUseCase::class => function ($config = null, $getShared = true) {
+                return new LoginUseCase($config);
+            },
+
             // Repositorios
             UserRepositoryInterface::class => UserRepository::class,
         ];
+    }
+
+    /**
+     * Secret Key Example Test
+     * @return string
+     */
+    public static function getSecretKey(): string
+    {
+        return 'secret_key_example_test';
     }
 }

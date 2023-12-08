@@ -2,17 +2,17 @@
 
 namespace App\Repositories\Users;
 
-use App\Models\User;
+use App\Models\UserModel;
 use App\Services\Criteria\CriteriaInterface;
 use ReflectionException;
 
 class UserRepository implements UserRepositoryInterface
 {
 
-    protected User $user;
+    protected UserModel $user;
     public function __construct()
     {
-        $this->user = new User();
+        $this->user = new UserModel();
     }
 
     /**
@@ -46,5 +46,35 @@ class UserRepository implements UserRepositoryInterface
         $criteria->apply($builder);
 
         return $builder->get()->getResult();
+    }
+
+    /**
+     * Find all users - limit defaults 20
+     * @param int $limit
+     * @return array
+     */
+    public function findAll(int $limit = 20)
+    {
+        return $this->user->findAll($limit);
+    }
+
+    /**
+     * Find users by id
+     * @param $id
+     * @return array|object|null
+     */
+    public function find($id)
+    {
+        return $this->user->find($id);
+    }
+
+    /**
+     * Remove users by id
+     * @param $id
+     * @return bool
+     */
+    public function remove($id): bool
+    {
+        return $this->user->delete($id);
     }
 }
