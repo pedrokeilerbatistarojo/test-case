@@ -5,6 +5,8 @@ namespace Config;
 use App\Repositories\Users\UserRepository;
 use App\Repositories\Users\UserRepositoryInterface;
 use App\UseCases\Auth\LoginUseCase;
+use App\UseCases\Users\DeleteUserUseCase;
+use App\UseCases\Users\DownloadUsersUseCase;
 use App\UseCases\Users\StoreUserUseCase;
 use App\UseCases\Users\ListUsersUseCase;
 use CodeIgniter\Config\BaseService;
@@ -41,6 +43,16 @@ class Services extends BaseService
     public static function getStoreUserUseCase(): StoreUserUseCase
     {
         return new StoreUserUseCase(self::getUserRepository());
+    }
+
+    public static function getDeleteUserUseCase(): DeleteUserUseCase
+    {
+        return new DeleteUserUseCase(self::getUserRepository());
+    }
+
+    public static function getDownloadUserUseCase(): DownloadUsersUseCase
+    {
+        return new DownloadUsersUseCase(self::getUserRepository());
     }
 
     public static function getServices()

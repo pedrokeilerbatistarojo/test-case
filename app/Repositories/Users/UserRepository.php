@@ -19,19 +19,21 @@ class UserRepository implements UserRepositoryInterface
      * Save or Update the user
      * @throws ReflectionException
      */
-    public function save(array $data): bool
+    public function save(array $data): array
     {
         // Filter only allowed fields before filling out the model
         $filterData = array_intersect_key($data, array_flip($this->user->allowedFields));
 
         //Select the operation by id (Save or Update)
         if (isset($data['id'])){
-            $result = $this->user->update($data['id'], $filterData);
+            $userId = $data['id'];
+            unset($filterData['id']);
+            $this->user->update($userId, $filterData);
         }else{
-            $result = (bool)$this->user->insert($filterData);
+            $userId = $this->user->insert($filterData);
         }
 
-        return $result;
+        return $this->user->find($userId);
 
     }
 

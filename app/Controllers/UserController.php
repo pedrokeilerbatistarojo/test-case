@@ -3,13 +3,17 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Services\App\DomPdfService;
+use App\Services\Users\UploadUserPictureService;
 use App\UseCases\Auth\LoginUseCase;
 use App\UseCases\Users\ListUsersUseCase;
 use App\UseCases\Users\StoreUserUseCase;
 use App\Validation\Users\StoreUserValidation;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\HTTP\Response;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
+use Dompdf\Dompdf;
 use ReflectionException;
 
 class UserController extends BaseController
@@ -42,16 +46,18 @@ class UserController extends BaseController
     public function store(): ResponseInterface
     {
         $validation = Services::validation();
-        $validation->setRules(StoreUserValidation::rules(), StoreUserValidation::messages());
+        $validation->setRules(StoreUserValidation::rules([]), StoreUserValidation::messages());
         if ($validation->withRequest($this->request)->run()) {
             $data = $this->request->getPost();
 
-            //Execute Login Use Case
+            //Upload a picture service handle
+            $data['picture'] = UploadUserPictureService::handle($this->request);
+
+            //Execute Store Use Case
             $user = $this->storeUserUseCase->execute($data);
 
             if ($user) {
-                $data['message'] = 'User created successful';
-                return $this->respond($data, 201);
+                return $this->respond($user, ResponseInterface::HTTP_CREATED);
             } else {
                 return $this->failUnauthorized('Invalid create user request');
             }
@@ -68,22 +74,65 @@ class UserController extends BaseController
      */
     public function update(): ResponseInterface
     {
-        $validation = Services::validation();
-        $validation->setRules(StoreUserValidation::rules(), StoreUserValidation::messages());
-        if ($validation->withRequest($this->request)->run()) {
-            $data = $this->request->getPost();
+        $data = $this->request->getJSON(true);
 
-            //Execute Login Use Case
+        $validation = Services::validation();
+        $validation->setRules(StoreUserValidation::rules($data, true), StoreUserValidation::messages());
+        if ($validation->withRequest($this->request)->run()) {
+
+            //Upload a picture service handle
+            $data['picture'] = UploadUserPictureService::handleBase64($data);
+
+            //Execute Update Use Case
             $user = $this->storeUserUseCase->execute($data);
 
             if ($user) {
-                $data['message'] = 'User updated successful';
-                return $this->respond($data, 201);
+                return $this->respond($user, ResponseInterface::HTTP_OK);
             } else {
                 return $this->failUnauthorized('Invalid updated user request');
             }
         }
 
         return $this->failValidationErrors($validation->getErrors());
+    }
+
+    /**
+     * Delete user
+     * @return ResponseInterface
+     */
+    public function delete(): ResponseInterface
+    {
+        $validation = Services::validation();
+        $validation->setRules(['id' => 'required']);
+        if ($validation->withRequest($this->request)->run()) {
+            $data = $this->request->getJSON(true);
+
+            $deleteUserCase = Services::getDeleteUserUseCase();
+            $result = $deleteUserCase->execute($data['id']);
+
+            if ($result) {
+                return $this->respond([
+                    'message' => 'Delete Successfully Success'
+                ], ResponseInterface::HTTP_OK);
+            } else {
+                return $this->failUnauthorized('Invalid deleted user request');
+            }
+        }
+
+        return $this->failValidationErrors($validation->getErrors());
+    }
+
+    /**
+     * Download list users
+     * @return ResponseInterface
+     */
+    public function downloadPdf(): ResponseInterface
+    {
+        $downloadUserUseCase = Services::getDownloadUserUseCase();
+        $downloadUserUseCase->execute();
+
+        return $this->respond([
+            'message' => 'Download Successfully Success'
+        ], ResponseInterface::HTTP_OK);
     }
 }

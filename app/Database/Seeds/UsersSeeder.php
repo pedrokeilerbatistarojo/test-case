@@ -48,9 +48,7 @@ class UsersSeeder extends Seeder
                 'updated_at' => $dateNow->format(DATE_TIME_FORMAT),
             ];
 
-            $id = $this->userRepository->save($data);
-
-            echo "User created with ID: $id\n";
+            $this->userRepository->save($data);
         }
     }
 

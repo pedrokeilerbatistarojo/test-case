@@ -14,5 +14,6 @@ $routes->group('api', ['filter' => 'authFilter'], function($routes) {
     $routes->post('users', 'UserController::store');
     $routes->put('users', 'UserController::update');
     $routes->delete('users', 'UserController::delete');
+    $routes->get('users-download', 'UserController::downloadPdf');
 });
 

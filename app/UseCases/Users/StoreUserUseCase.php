@@ -28,7 +28,6 @@ class StoreUserUseCase
     public function execute(array $data): array
     {
         $userData = $this->userRepository->save($data);
-
         // Transform the data item using the transformer
         $transformer = new UserTransformer();
         $resource = new Item($userData, $transformer);

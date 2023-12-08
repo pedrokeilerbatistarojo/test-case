@@ -10,9 +10,9 @@ interface UserRepositoryInterface
     /**
      * Save the user in the repository
      * @param array $data
-     * @return bool
+     * @return array
      */
-    public function save(array $data): bool;
+    public function save(array $data): array;
 
     /**
      * Search users by criteria

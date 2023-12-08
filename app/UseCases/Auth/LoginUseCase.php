@@ -63,7 +63,7 @@ class LoginUseCase
         $payload = [
             'aud' => base_url(),
             'iat' => $time,
-            'exp' => $time + 180,
+            'exp' => $time + 100000000, //Expire time is hardcode only for test purposes
             'data' => [
                 'user_id' => $user->id,
                 'phone' => $user->phone,
