@@ -7,6 +7,12 @@ use Config\Services;
 
 class StoreUserValidation
 {
+    /**
+     * Store validation rules
+     * @param array $data
+     * @param bool $isUpdate
+     * @return string[]
+     */
     public static function rules(array $data, bool $isUpdate = false): array
     {
         $rules = [
@@ -33,6 +39,10 @@ class StoreUserValidation
         return $rules;
     }
 
+    /**
+     * Store validation messages
+     * @return array[]
+     */
     public static function messages(): array
     {
         return [
@@ -58,6 +68,12 @@ class StoreUserValidation
         ];
     }
 
+    /**
+     * Validation for basic user's actions
+     * @param $tokenData
+     * @param array $params
+     * @return bool
+     */
     public static function validActionUserBasic($tokenData, array $params = []): bool
     {
         if($tokenData->type == UserModel::TYPE_BASIC) {
@@ -71,6 +87,5 @@ class StoreUserValidation
         }
 
         return true;
-
     }
 }
