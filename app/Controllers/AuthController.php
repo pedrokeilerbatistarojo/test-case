@@ -23,7 +23,6 @@ class AuthController extends BaseController
      * Login users with api
      * @return ResponseInterface
      * @throws ReflectionException
-     * @throws \RedisException
      */
     public function login(): ResponseInterface
     {

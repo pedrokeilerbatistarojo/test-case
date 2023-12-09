@@ -27,7 +27,6 @@ class LoginUseCase
      * @param string $password
      * @return string|null
      * @throws ReflectionException
-     * @throws RedisException
      */
     public function execute(string $phone, string $password): ?string
     {
@@ -59,7 +58,6 @@ class LoginUseCase
      * Generate Json Web Token
      * @param $user
      * @return string
-     * @throws RedisException
      */
     public function generate_jwt($user): string
     {
@@ -79,11 +77,6 @@ class LoginUseCase
         ];
 
         //Return JWT
-        $token = JWT::encode($payload, $key, 'HS256');
-
-        //Store in redis cache
-        $this->redisService->set("$token", $payload['data'], $expiration);
-
-        return $token;
+        return JWT::encode($payload, $key, 'HS256');
     }
 }
