@@ -65,7 +65,7 @@ class LoginUseCase
     {
         $key = Services::getSecretKey();
         $time = time();
-        $expiration = $time + 100000000;//Expire time is hardcode only for test purposes
+        $expiration = $time + 1000000;//Expire time is hardcode only for test purposes
 
         $payload = [
             'aud' => base_url(),
@@ -78,10 +78,12 @@ class LoginUseCase
             ]
         ];
 
-        //Store in redis cache
-        $this->redisService->set('jwt', $payload, $expiration);
-
         //Return JWT
-        return JWT::encode($payload, $key, 'HS256');
+        $token = JWT::encode($payload, $key, 'HS256');
+
+        //Store in redis cache
+        $this->redisService->set("$token", $payload['data'], $expiration);
+
+        return $token;
     }
 }

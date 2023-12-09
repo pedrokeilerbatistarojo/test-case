@@ -150,7 +150,6 @@ class UserController extends BaseController
      * @param $authHeader
      * @param $userRole
      * @return bool
-     * @throws RedisException
      */
     private function validationByTokenRole($authHeader, $userRole): bool
     {
