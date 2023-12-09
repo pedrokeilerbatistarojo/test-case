@@ -14,7 +14,10 @@
         "codeigniter4/framework": "^4.0",
         "dompdf/dompdf": "^2.0",
         "firebase/php-jwt": "^6.10",
-        "league/fractal": "^0.20.1"
+        "league/fractal": "^0.20.1",
+        "predis/predis": "^2.2",
+        "ext-redis": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\Redis\RedisService;
 use App\UseCases\Auth\LoginUseCase;
 use App\Validation\Auth\LoginValidation;
 use CodeIgniter\API\ResponseTrait;
@@ -12,9 +13,7 @@ use ReflectionException;
 class AuthController extends BaseController
 {
     use ResponseTrait;
-
     private LoginUseCase $loginUseCase;
-
     public function __construct()
     {
         $this->loginUseCase = Services::getLoginUseCase();
@@ -24,6 +23,7 @@ class AuthController extends BaseController
      * Login users with api
      * @return ResponseInterface
      * @throws ReflectionException
+     * @throws \RedisException
      */
     public function login(): ResponseInterface
     {
@@ -49,4 +49,5 @@ class AuthController extends BaseController
 
         return $this->failValidationErrors($validation->getErrors());
     }
+
 }

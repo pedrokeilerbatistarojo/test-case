@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Libraries\Redis\RedisService;
 use App\Repositories\Users\UserRepository;
 use App\Repositories\Users\UserRepositoryInterface;
 use App\UseCases\Auth\LoginUseCase;
@@ -10,6 +11,7 @@ use App\UseCases\Users\DownloadUsersUseCase;
 use App\UseCases\Users\StoreUserUseCase;
 use App\UseCases\Users\ListUsersUseCase;
 use CodeIgniter\Config\BaseService;
+use Redis;
 
 /**
  * Services Configuration file.
@@ -53,6 +55,16 @@ class Services extends BaseService
     public static function getDownloadUserUseCase(): DownloadUsersUseCase
     {
         return new DownloadUsersUseCase(self::getUserRepository());
+    }
+
+    public static function getRedis(): Redis
+    {
+        return new Redis();
+    }
+
+    public static function getRedisServices(): RedisService
+    {
+        return new RedisService(self::getRedis());
     }
 
     public static function getServices()

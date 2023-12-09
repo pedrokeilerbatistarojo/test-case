@@ -1,20 +1,24 @@
 <?php
 namespace App\UseCases\Auth;
 
+use App\Libraries\Redis\RedisService;
 use App\Repositories\Users\UserRepository;
 use App\Repositories\Users\UserRepositoryInterface;
 use App\Services\Criteria\Users\FieldUserCriteria;
 use Config\Services;
 use Firebase\JWT\JWT;
+use Redis;
+use RedisException;
 use ReflectionException;
 
 class LoginUseCase
 {
     protected UserRepositoryInterface $userRepository;
-
+    protected RedisService $redisService;
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
+        $this->redisService = Services::getRedisServices();
     }
 
     /**
@@ -23,6 +27,7 @@ class LoginUseCase
      * @param string $password
      * @return string|null
      * @throws ReflectionException
+     * @throws RedisException
      */
     public function execute(string $phone, string $password): ?string
     {
@@ -54,16 +59,18 @@ class LoginUseCase
      * Generate Json Web Token
      * @param $user
      * @return string
+     * @throws RedisException
      */
     public function generate_jwt($user): string
     {
         $key = Services::getSecretKey();
         $time = time();
+        $expiration = $time + 100000000;//Expire time is hardcode only for test purposes
 
         $payload = [
             'aud' => base_url(),
             'iat' => $time,
-            'exp' => $time + 100000000, //Expire time is hardcode only for test purposes
+            'exp' => $expiration,
             'data' => [
                 'user_id' => $user->id,
                 'phone' => $user->phone,
@@ -71,6 +78,10 @@ class LoginUseCase
             ]
         ];
 
+        //Store in redis cache
+        $this->redisService->set('jwt', $payload, $expiration);
+
+        //Return JWT
         return JWT::encode($payload, $key, 'HS256');
     }
 }

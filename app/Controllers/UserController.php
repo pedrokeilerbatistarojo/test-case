@@ -10,6 +10,7 @@ use App\Validation\Users\StoreUserValidation;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
+use RedisException;
 use ReflectionException;
 
 class UserController extends BaseController
@@ -149,6 +150,7 @@ class UserController extends BaseController
      * @param $authHeader
      * @param $userRole
      * @return bool
+     * @throws RedisException
      */
     private function validationByTokenRole($authHeader, $userRole): bool
     {

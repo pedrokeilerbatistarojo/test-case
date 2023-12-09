@@ -3,6 +3,7 @@
 namespace App\Services\Users;
 
 use CodeIgniter\HTTP\IncomingRequest;
+use RuntimeException;
 
 class UploadUserPictureService
 {
@@ -15,11 +16,11 @@ class UploadUserPictureService
     {
         $img = $request->getFile('picture');
 
-        if (! $img->isValid()) {
-            throw new \RuntimeException($img->getErrorString() . '(' . $img->getError() . ')');
+        if (!$img->isValid()) {
+            throw new RuntimeException($img->getErrorString() . '(' . $img->getError() . ')');
         }
 
-        if (! $img->hasMoved()) {
+        if (!$img->hasMoved()) {
             return WRITEPATH . 'uploads\\' . $img->store();
         }
 
