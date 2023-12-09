@@ -10,6 +10,7 @@ use App\Validation\Users\StoreUserValidation;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
+use Exception;
 use RedisException;
 use ReflectionException;
 
@@ -29,6 +30,7 @@ class UserController extends BaseController
     /**
      * List users
      * @return ResponseInterface
+     * @throws RedisException
      */
     public function index(): ResponseInterface
     {
@@ -134,6 +136,7 @@ class UserController extends BaseController
     /**
      * Download list users in PDF
      * @return ResponseInterface
+     * @throws Exception
      */
     public function downloadPdf(): ResponseInterface
     {
@@ -160,6 +163,16 @@ class UserController extends BaseController
         }
 
         return false;
+    }
+
+    /**
+     * @throws RedisException
+     */
+    public function pdf()
+    {
+        $data = ['users' => $this->listUsersUseCase->getUserData()];
+
+        return view('users/pdf', $data);
     }
 
 }

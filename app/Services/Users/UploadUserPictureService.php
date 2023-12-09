@@ -21,7 +21,7 @@ class UploadUserPictureService
         }
 
         if (!$img->hasMoved()) {
-            return WRITEPATH . 'uploads\\' . $img->store();
+            return WRITEPATH . 'uploads/' . $img->store();
         }
 
         return null;
@@ -37,12 +37,13 @@ class UploadUserPictureService
         if (!isset($data['picture'])){
             return null;
         }
+
         $imageBase64 = $data['picture'];
 
         // Decode picture to base64
         $imageData = base64_decode($imageBase64);
 
-        $uploadPath = WRITEPATH . 'uploads\\';
+        $uploadPath = WRITEPATH . 'uploads/';
         $filename = uniqid('image_') . '.jpg';
         $filePath = $uploadPath . $filename;
 

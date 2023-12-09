@@ -23,7 +23,7 @@ class RedisService
      * @return bool|Redis
      * @throws RedisException
      */
-    public function set(string $key, $value, int $expiration = 0)
+    public function set(string $key, $value, int $expiration = 300)
     {
         $value = json_encode($value);
         return $this->redis->set($key, $value, $expiration);
@@ -39,7 +39,7 @@ class RedisService
     public function get(string $key)
     {
         $result = $this->redis->get($key);
-        return json_decode($result);
+        return json_decode($result, true);
     }
 
     /**

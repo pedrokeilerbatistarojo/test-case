@@ -10,13 +10,14 @@
 6. API para la descarga del listado de usuarios
 
 ## Descripciones
-Se implemento una arquitetura limpia.  
+Se implemento una arquitectura limpia.  
 No se hizo el modelado de carpetas de dominio, teniendo en cuenta que existe un solo domonio en el proyecto (**Domain Users**).
 
 Para el manejo de la autenticacion y roles solo se utilizo un modelo usuario y un campo type (**string**) para modelar los roles.
 Se pudo utilizar otra entidad Role y relacionarlas para manejar los roles de forma mas profesional, pero al ser un test case, se hizo de la forma mas simple.
 
-Para manejar la cache se uso **Redis**, para guardar los datos del token y manejarlos de forma optima.
+Para manejar la cache se uso **Redis**, asi mantenemos un listado de usuarios mucho mas rapido y optimo.
+
 ## Instalación
 
 1. Descargue o clone el repositorio.

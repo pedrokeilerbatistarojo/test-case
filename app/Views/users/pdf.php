@@ -48,19 +48,26 @@
     </style>
 
     <div class="container">
-        <?php foreach($users as $user): ?>
-            <div class="row">
-                <div class="col">
-                    <img class="img-fluid" src="<?=site_url($user['picture']) ?>"  alt="<?=$user['picture'] ?>"/>
-                </div>
-                <div class="col">
-                    <span class="d-block"><?=$user['first_name'] . ' ' . $user['last_name'] ?></span>
-                    <span class="d-block"><?=$user['phone']?></span>
-                    <span class="d-block"><a href="mailto:<?=$user['email']?>"><?=$user['email']?></a></span>
-                    <span class="d-block"><?=$user['type']?></span>
-                </div>
-            </div>
-        <?php endforeach; ?>
+            <table>
+                <?php foreach($users as $user): ?>
+                <tr>
+                    <td>
+                        <?php
+                            $ruteImageLocal = $user['picture'];
+                            $decodeImage = base64_encode(file_get_contents($ruteImageLocal));
+                        ?>
+                        <img class="img-fluid" src="data:image/png;base64,<?=$decodeImage?>"  alt=""/>
+                    </td>
+                    <td>
+                        <span class="d-block"><?=$user['first_name'] . ' ' . $user['last_name'] ?></span>
+                        <span class="d-block"><?=$user['phone']?></span>
+                        <span class="d-block"><a href="mailto:<?=$user['email']?>"><?=$user['email']?></a></span>
+                        <span class="d-block"><?=$user['type']?></span>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+
     </div>
 
 </body>
