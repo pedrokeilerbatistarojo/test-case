@@ -21,7 +21,7 @@ class UploadUserPictureService
         }
 
         if (!$img->hasMoved()) {
-            return WRITEPATH . 'uploads/' . $img->store();
+            return self::storeImage($img->store());
         }
 
         return null;
@@ -34,20 +34,33 @@ class UploadUserPictureService
      */
     public static function handleBase64(array $data): ?string
     {
-        if (!isset($data['picture'])){
+        if (!isset($data['picture'])) {
             return null;
         }
 
-        $imageBase64 = $data['picture'];
-
         // Decode picture to base64
-        $imageData = base64_decode($imageBase64);
+        $imageData = base64_decode($data['picture']);
 
-        $uploadPath = WRITEPATH . 'uploads/';
         $filename = uniqid('image_') . '.jpg';
+
+        return self::storeImage($filename, $imageData);
+    }
+
+    /**
+     * Store the image in the specified directory
+     *
+     * @param string $filename
+     * @param string|null $imageData
+     * @return string
+     */
+    protected static function storeImage(string $filename, ?string $imageData = null): string
+    {
+        $uploadPath = WRITEPATH . 'uploads/';
         $filePath = $uploadPath . $filename;
 
-        file_put_contents($filePath, $imageData);
+        if ($imageData !== null) {
+            file_put_contents($filePath, $imageData);
+        }
 
         return $filePath;
     }

@@ -8,7 +8,6 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 
 $routes->post('auth/login', 'AuthController::login');
-$routes->get('pdf', 'UserController::pdf');
 
 $routes->group('api', ['filter' => 'authFilter'], function($routes) {
     $routes->get('users', 'UserController::index');

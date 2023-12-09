@@ -165,14 +165,4 @@ class UserController extends BaseController
         return false;
     }
 
-    /**
-     * @throws RedisException
-     */
-    public function pdf()
-    {
-        $data = ['users' => $this->listUsersUseCase->getUserData()];
-
-        return view('users/pdf', $data);
-    }
-
 }
