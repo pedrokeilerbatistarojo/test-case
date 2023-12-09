@@ -14,11 +14,9 @@ use ReflectionException;
 class LoginUseCase
 {
     protected UserRepositoryInterface $userRepository;
-    protected RedisService $redisService;
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->redisService = Services::getRedisServices();
     }
 
     /**
