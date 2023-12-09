@@ -25,7 +25,7 @@ class AuthController extends BaseController
      * @return ResponseInterface
      * @throws ReflectionException
      */
-    public function login()
+    public function login(): ResponseInterface
     {
         $validation = Services::validation();
         $validation->setRules(LoginValidation::rules(), LoginValidation::messages());
